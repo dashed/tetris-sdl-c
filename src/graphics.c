@@ -50,24 +50,11 @@ void setRenderChanged() {
 }
 
 void preRender() {
-    // Set rendering clear color
-    // This sets the 'background color'
-    // SDL_SetRenderDrawColor(render, 204, 192, 179, 255);
-
-    // Clear the render
-    // 'set' background color defined in SDL_SetRenderDrawColor(...)
-    // SDL_RenderClear(render);
 
     SDL_SetRenderTarget(render, display);
 }
 
 void updateRender() {
-
-    // // Set rendering clear color to be black
-    // SDL_SetRenderDrawColor(render, 204, 192, 179, 255);
-
-    // // Clear the render
-    // SDL_RenderClear(render);
 
     if(render_changed) {
 
