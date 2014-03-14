@@ -437,6 +437,10 @@ bool render_current_tetromino(Tetromino_Movement tetra_request) {
     while(render_tetromino(ghost_request, GHOST_TETROMINO_COORDS))
         ghost_request.y += 1;
 
+    // change alpha to 90%
+    tetra_request.type.color = tetra_request.type.color & 0x00FFFFFF;
+    tetra_request.type.color = tetra_request.type.color | 0xE5000000;
+
     if(render_tetromino(tetra_request, CURRENT_TETROMINO_COORDS)) {
         CURRENT_TETROMINO = tetra_request;
 

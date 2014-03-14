@@ -51,7 +51,8 @@ typedef enum {
     YELLOW = 0xFF00DCFF,
     GREEN = 0xFF40CC2E,
     PURPLE = 0xFF4B1485,
-    RED = 0xFF4136FF
+    RED = 0xFF4B59F2
+
 } Color_Block;
 
 // default tetris action
