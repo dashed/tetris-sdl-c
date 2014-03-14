@@ -11,9 +11,9 @@ Install
 
 1.  Install SDL 2.x in UNIX style; something like `./configure && make && make install`.
 
-2. `make` to create `toy`
+2. `make` to create `tetris_toy`
 
-3. `./toy`
+3. `./tetris_toy`
 
 Usage
 =====
