@@ -85,18 +85,26 @@ void updateRender() {
     }
 }
 
-void draw_block(int x, int y) {
+void draw_block(int x, int y, int red, int green, int blue, int alpha) {
+
+    assert(x >= 0 && x < PLAYFIELD_WIDTH);
+    assert(y >= 0 && y < PLAYFIELD_HEIGHT);
 
     // top-left coords of block
-    int x_tl = x * BLOCK_SIZE + 1;
-    int y_tl = y * BLOCK_SIZE + 1;
+    int x_tl = x * (BLOCK_SIZE + 1) + 1;
+    int y_tl = y * (BLOCK_SIZE + 1) + 1;
 
     // bottom-right coords of block
     int x_br = x_tl + BLOCK_SIZE;
     int y_br = y_tl + BLOCK_SIZE;
 
-    boxRGBA(render, x_tl, y_tl, x_br, y_br, 255, 0, 0, 255);
+    boxRGBA(render, x_tl, y_tl, x_br, y_br, red, green, blue, alpha);
 
     setRenderChanged();
 
+}
+
+void cleanup_graphics() {
+    SDL_DestroyRenderer(render);
+    SDL_DestroyWindow(window);
 }

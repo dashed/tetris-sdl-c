@@ -35,9 +35,7 @@ void init() {
 
 void cleanup() {
 
-    // SDL_DestroyTexture(tex);
-    SDL_DestroyRenderer(render);
-    SDL_DestroyWindow(window);
+    cleanup_graphics();
 
     // Shut down SDL
     SDL_Quit();
