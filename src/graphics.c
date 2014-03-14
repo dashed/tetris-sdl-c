@@ -1,6 +1,6 @@
 #include "graphics.h"
 
-// TODO: better name?
+
 void init_graphics() {
 
     render_changed = false;
@@ -45,9 +45,6 @@ void init_graphics() {
     SDL_SetRenderTarget(render, display);
 }
 
-
-
-
 void setRenderChanged() {
     render_changed = true;
 }
@@ -79,7 +76,6 @@ void updateRender() {
 
         SDL_RenderPresent(render);
         render_changed = false;
-
 
     }
 }

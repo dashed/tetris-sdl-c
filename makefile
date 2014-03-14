@@ -1,6 +1,6 @@
 CFLAGS   = -g `sdl2-config --cflags`
 LDFLAGS  = `sdl2-config --libs` -lSDL2_image -lSDL2_gfx
-PROG = toy
+PROG = tetris_toy
 CXX = gcc
 
 OBJS   = init.o input.o graphics.o tetris.o shuffle.o main.o

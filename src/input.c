@@ -20,23 +20,31 @@ void getInput() {
                     break;
 
                     case SDLK_s:
+                    case SDLK_DOWN:
                         TETROMINO_ACTION = DOWN;
                     break;
 
                     case SDLK_d:
+                    case SDLK_RIGHT:
                         TETROMINO_ACTION = RIGHT;
                     break;
 
                     case SDLK_a:
+                    case SDLK_LEFT:
                         TETROMINO_ACTION = LEFT;
                     break;
 
                     case SDLK_w:
+                    case SDLK_UP:
                         TETROMINO_ACTION = ROTATE;
                     break;
 
                     case SDLK_r:
                         TETROMINO_ACTION = RESTART;
+                    break;
+
+                    case SDLK_SPACE:
+                        TETROMINO_ACTION = DROP;
                     break;
 
                     default:

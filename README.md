@@ -4,6 +4,8 @@ tetris-sdl-c
 A simple tetris game implemented in C using SDL 2.x.
 This is just a toy project to play with and learn SDL 2.x.
 
+![](demo.gif)
+
 Install
 =======
 
@@ -13,10 +15,27 @@ Install
 
 3. `./toy`
 
+Usage
+=====
+
+- Move tetromino with WASD keys or arrow keys.
+- Press `spacebar` for hard Tetromino drop.
+
+- Press `r` to reset.
+- Press `esc` to quit.
+-
+
 Status
 ======
 
-Not finished.
+Adequately finished.
+
+To Do
+=====
+
+- Add wall kick
+- Ghost piece
+- Implement any other mechanics listed in http://tetrisconcept.net/wiki/Main_Page
 
 License
 =======

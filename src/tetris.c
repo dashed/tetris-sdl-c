@@ -79,6 +79,67 @@ void initTetris() {
 
 }
 
+void lockTetromino() {
+
+    lock_delay_count = 0;
+
+    // lock tetromino in place
+    int i = 4;
+    while(i --> 0) {
+        uint8_t x_coord = i * 2;
+        uint8_t y_coord = x_coord + 1;
+
+        uint8_t _x = CURRENT_TETROMINO_COORDS[x_coord];
+        uint8_t _y = CURRENT_TETROMINO_COORDS[y_coord];
+
+        CURRENT_TETROMINO_COORDS[x_coord] = 0;
+        CURRENT_TETROMINO_COORDS[y_coord] = 0;
+
+        set_playfield(_x, _y, CURRENT_TETROMINO.type.color);
+    }
+
+    // clear lines if any
+    uint8_t row = PLAYFIELD_HEIGHT;
+    int8_t row_to_copy_to = -1;
+    while(row --> 0) {
+        uint8_t col;
+        bool complete_line = true;
+
+        // check if line is complete
+        for(col = 0; col < PLAYFIELD_WIDTH; col++) {
+            if(get_playfield(col, row) == EMPTY) {
+
+                complete_line = false;
+                break;
+            }
+        }
+
+        // clear line
+        if(complete_line) {
+
+            if(row_to_copy_to < row) {
+                row_to_copy_to = row;
+            }
+
+            for(col = 0; col < PLAYFIELD_WIDTH; col++) {
+                set_playfield(col, row, EMPTY);
+            }
+
+        } else if(row_to_copy_to > row) {
+
+            for(col = 0; col < PLAYFIELD_WIDTH; col++) {
+                set_playfield(col, row_to_copy_to, get_playfield(col, row));
+            }
+
+            row_to_copy_to--;
+        }
+
+    }
+
+    spawn_tetromino();
+
+}
+
 void updateTetris() {
 
     if (cb_timer == 0) {
@@ -111,6 +172,12 @@ void updateTetris() {
 
         case DROP:
 
+            request.y += 1;
+            while(render_tetromino(request))
+                request.y += 1;
+
+            lockTetromino();
+
         break;
 
         case DOWN:
@@ -136,62 +203,7 @@ void updateTetris() {
             }
 
             if (lock_delay_count >= lock_delay_threshold) {
-                lock_delay_count = 0;
-
-                // lock tetromino in place
-                int i = 4;
-                while(i --> 0) {
-                    uint8_t x_coord = i * 2;
-                    uint8_t y_coord = x_coord + 1;
-
-                    uint8_t _x = CURRENT_TETROMINO_COORDS[x_coord];
-                    uint8_t _y = CURRENT_TETROMINO_COORDS[y_coord];
-
-                    CURRENT_TETROMINO_COORDS[x_coord] = 0;
-                    CURRENT_TETROMINO_COORDS[y_coord] = 0;
-
-                    set_playfield(_x, _y, CURRENT_TETROMINO.type.color);
-                }
-
-                // clear lines if any
-                uint8_t row = PLAYFIELD_HEIGHT;
-                int8_t row_to_copy_to = -1;
-                while(row --> 0) {
-                    uint8_t col;
-                    bool complete_line = true;
-
-                    // check if line is complete
-                    for(col = 0; col < PLAYFIELD_WIDTH; col++) {
-                        if(get_playfield(col, row) == EMPTY) {
-
-                            complete_line = false;
-                            break;
-                        }
-                    }
-
-                    // clear line
-                    if(complete_line) {
-
-                        if(row_to_copy_to < row) {
-                            row_to_copy_to = row;
-                        }
-
-                        for(col = 0; col < PLAYFIELD_WIDTH; col++) {
-                            set_playfield(col, row, EMPTY);
-                        }
-
-                    } else if(row_to_copy_to > row) {
-
-                        for(col = 0; col < PLAYFIELD_WIDTH; col++) {
-                            set_playfield(col, row_to_copy_to, get_playfield(col, row));
-                        }
-
-                        row_to_copy_to--;
-                    }
-
-                }
-
-                spawn_tetromino();
+                lockTetromino();
             }
 
         break;

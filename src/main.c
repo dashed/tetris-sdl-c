@@ -4,7 +4,7 @@ int main(int argc, const char *argv[]) {
 
     // Start up SDL, and make sure it went ok
     //
-    // TODO: change from SDL_INIT_EVERYTHING down the road
+    uint32_t flags = SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_EVENTS;
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
 
         fprintf(stderr,
@@ -18,13 +18,10 @@ int main(int argc, const char *argv[]) {
 
     init();
 
-    // draw_block(9, 21, 255, 65, 54, 255);
-
     bool quit = false;
     while(!quit) {
 
         preRender();
-        // draw_playing_field();
 
         getInput();
 

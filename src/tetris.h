@@ -22,7 +22,7 @@ typedef struct {
 
     Tetromino type;
 
-    // 0 to 4
+    // expected values from 0 to 4 which are the indices of Tetromino.rotation
     uint8_t rotation;
 
     uint8_t x;
@@ -37,6 +37,7 @@ typedef enum {
     RIGHT,
     DROP,
     ROTATE,
+    // soft-drop tetrominos
     AUTO_DROP,
     RESTART
 } Tetris_Action;
@@ -48,7 +49,6 @@ typedef enum {
     ORANGE = 0XFF1B85FF,
     YELLOW = 0xFF00DCFF,
     GREEN = 0xFF40CC2E,
-    // PURPLE = 0xFFC90DB1,
     PURPLE = 0xFF4B1485,
     RED = 0xFF4136FF
 } Color_Block;
@@ -56,7 +56,6 @@ typedef enum {
 // default tetris action
 // defines the action to apply to current tetromino
 extern Tetris_Action TETROMINO_ACTION;
-
 
 // tetromino data
 const static Tetromino TETRA_I = {
@@ -73,10 +72,12 @@ const static Tetromino TETRA_L = {
     {0x2E00, 0x4460, 0x0E80, 0xC440},
     ORANGE
 };
+
 const static Tetromino TETRA_O = {
     {0x6600, 0x6600, 0x6600, 0x6600},
     YELLOW
 };
+
 const static Tetromino TETRA_S = {
     {0x6C00, 0x4620, 0x06C0, 0x8c40},
     GREEN
@@ -98,7 +99,6 @@ const static Tetromino TETRA_Z = {
 // To access a coord, if 0 <= i < 4, then
 //      x = i * 2, y = x + 1
 //
-// TODO: put all of this into a struct
 static uint8_t CURRENT_TETROMINO_COORDS[8] = {0};
 
 static Tetromino_Movement CURRENT_TETROMINO;
@@ -137,6 +137,7 @@ void set_playfield(uint8_t x, uint8_t y, Color_Block color);
 
 void initTetris();
 void updateTetris();
+void lockTetromino();
 
 void spawn_tetromino();
 bool render_tetromino(Tetromino_Movement tetra_request);
