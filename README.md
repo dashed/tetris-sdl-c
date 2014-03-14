@@ -14,7 +14,6 @@ Install
     On OSX, you may use [homebrew](http://brew.sh/).
 
     Also install:
-
     * [SDL2_gfx](http://cms.ferzkopp.net/index.php/software/13-sdl-gfx)
     * [SDL2_ttf](https://www.libsdl.org/projects/SDL_ttf/)
 
