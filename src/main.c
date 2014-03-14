@@ -14,13 +14,15 @@ int main(int argc, const char *argv[]) {
         return 1;
     }
 
-    init("Some window title");
+    init();
 
     atexit(cleanup);
 
     bool quit = false;
     while(!quit) {
         getInput();
+
+        updateRender();
 
         // Sleep briefly to stop sucking up all the CPU time
         // 1000 ms/ 60 fps = 1/16 s^2/frame

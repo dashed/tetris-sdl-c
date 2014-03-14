@@ -1,8 +1,10 @@
 #include "defs.h"
+#include "graphics.h"
 
-extern SDL_Window *window;
-extern SDL_Renderer *render;
+// extern vars from graphics.h
+SDL_Window *window;
+SDL_Renderer *render;
 
-void init(char *title);
+void init();
 
 void cleanup();
