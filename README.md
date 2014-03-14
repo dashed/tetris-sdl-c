@@ -23,7 +23,6 @@ Usage
 
 - Press `r` to reset.
 - Press `esc` to quit.
--
 
 Status
 ======
