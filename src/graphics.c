@@ -85,7 +85,7 @@ void updateRender() {
     }
 }
 
-void draw_block(int x, int y, int red, int green, int blue, int alpha) {
+void draw_block(int x, int y, uint32_t color) {
 
     assert(x >= 0 && x < PLAYFIELD_WIDTH);
     assert(y >= 0 && y < PLAYFIELD_HEIGHT);
@@ -98,7 +98,7 @@ void draw_block(int x, int y, int red, int green, int blue, int alpha) {
     int x_br = x_tl + BLOCK_SIZE;
     int y_br = y_tl + BLOCK_SIZE;
 
-    boxRGBA(render, x_tl, y_tl, x_br, y_br, red, green, blue, alpha);
+    boxColor(render, x_tl, y_tl, x_br, y_br, color);
 
     setRenderChanged();
 

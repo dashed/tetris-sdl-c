@@ -5,10 +5,8 @@ void getInput() {
 
     /* Loop through waiting messages and process them */
 
-    while (SDL_PollEvent(&event))
-    {
-        switch (event.type)
-        {
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
             /* Closing the Window or pressing Escape will exit the program */
 
             case SDL_QUIT:
@@ -16,8 +14,7 @@ void getInput() {
             break;
 
             case SDL_KEYDOWN:
-                switch (event.key.keysym.sym)
-                {
+                switch (event.key.keysym.sym) {
                     case SDLK_ESCAPE:
                         exit(0);
                     break;

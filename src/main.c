@@ -14,17 +14,21 @@ int main(int argc, const char *argv[]) {
         return 1;
     }
 
+    atexit(cleanup);
+
     init();
 
-    atexit(cleanup);
+    // draw_block(9, 21, 255, 65, 54, 255);
 
     bool quit = false;
     while(!quit) {
         getInput();
 
+        updateTetris();
+
         updateRender();
 
-        // Sleep briefly to stop sucking up all the CPU time
+        // Set to ~60 fps.
         // 1000 ms/ 60 fps = 1/16 s^2/frame
         SDL_Delay(16);
     }

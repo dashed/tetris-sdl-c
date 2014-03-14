@@ -11,7 +11,7 @@ void init_graphics();
 void cleanup_graphics();
 
 void draw_playing_field();
-void draw_block(int x, int y, int red, int green, int blue, int alpha);
+void draw_block(int x, int y, uint32_t color);
 
 void setRenderChanged();
 void updateRender();
