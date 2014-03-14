@@ -9,7 +9,7 @@ This is just a toy project to play with and learn SDL 2.x.
 Install
 =======
 
-1.  Install SDL 2.x in UNIX style; something like `./configure && make && make install`.
+1.  Install SDL 2.x ([www.libsdl.org](http://www.libsdl.org/)) in UNIX style; something like `./configure && make && make install`.
 
 2. `make` to create `tetris_toy`
 
