@@ -29,7 +29,7 @@ void init_graphics() {
     // SDL_RENDERER_ACCELERATED: We want to use hardware accelerated rendering
     // SDL_RENDERER_PRESENTVSYNC: We want the renderer's present function (update screen) to be
     // synchornized with the monitor's refresh rate
-    render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);
 
     if (render == NULL) {
         fprintf(stderr,
@@ -37,6 +37,8 @@ void init_graphics() {
                 SDL_GetError());
         exit(1);
     }
+
+    SDL_SetRenderDrawBlendMode(render, SDL_BLENDMODE_BLEND);
 
     display = SDL_CreateTexture(render, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
 

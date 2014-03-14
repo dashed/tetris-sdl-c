@@ -35,6 +35,10 @@ void getInput() {
                         TETROMINO_ACTION = ROTATE;
                     break;
 
+                    case SDLK_r:
+                        TETROMINO_ACTION = RESTART;
+                    break;
+
                     default:
                     break;
                 }
@@ -42,6 +46,10 @@ void getInput() {
 
             case SDL_KEYUP:
                 TETROMINO_ACTION = NONE;
+            break;
+
+            case SDL_USEREVENT:
+                TETROMINO_ACTION = AUTO_DROP;
             break;
 
             default:

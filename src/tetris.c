@@ -1,5 +1,6 @@
 #include "tetris.h"
 
+
 void draw_playing_field() {
 
     // Set rendering clear color
@@ -21,38 +22,91 @@ void draw_playing_field() {
     for (; i >= 0; i -= BLOCK_SIZE + 1)
         aalineRGBA(render, 0, i, WINDOW_WIDTH, i, 187, 173, 160, 255);
 
-
     // Update the screen
     setRenderChanged();
 }
 
-// TODO: remove
-bool lol = false;
-void updateTetris() {
+Uint32 auto_drop_timer(Uint32 interval, void *param) {
 
-    if(!lol) {
-        spawn_tetromino();
-        lol = true;
+    SDL_Event event;
+    SDL_UserEvent userevent;
+
+    userevent.type = SDL_USEREVENT;
+    userevent.code = 0;
+    userevent.data1 = NULL;
+    userevent.data2 = NULL;
+
+    event.type = SDL_USEREVENT;
+    event.user = userevent;
+
+    SDL_PushEvent(&event);
+    return interval;
+}
+
+void initTetris() {
+
+    // set up SDL timer
+    if(cb_timer != 0) {
+        SDL_RemoveTimer(cb_timer);
+    }
+    cb_timer = 0;
+
+    TETROMINO_ACTION = NONE;
+
+    // Empty the playfield
+    int i = PLAYFIELD_HEIGHT * PLAYFIELD_WIDTH;
+    while (i --> 0) {
+        playfield[i] = EMPTY;
     }
 
+    // build tetromino queue
+    current_queue_index = 0;
+    i = tetromino_queue_size;
+    int n = 0;
+    while(i --> 0) {
+        if((i + 1) % 4 == 0) {
+            n++;
+        }
+        tetromino_queue[i] = n;
+    }
+
+    // apply shuffle algorithm
+    shuffle(tetromino_queue, tetromino_queue_size, sizeof(uint8_t));
+
+    draw_playing_field();
+
+    spawn_tetromino();
+
+}
+
+void updateTetris() {
+
+    if (cb_timer == 0) {
+        cb_timer = SDL_AddTimer(1000, auto_drop_timer, NULL);
+    }
+
+    Tetromino_Movement request = CURRENT_TETROMINO;
+
+    // action from keyboard
     switch(TETROMINO_ACTION) {
         case NONE:
-            render_tetromino(CURRENT_TETROMINO_TYPE, CURRENT_ROT, CURRENT_POS[0], CURRENT_POS[1]);
+            render_tetromino(request);
         break;
 
         case ROTATE:
-            render_tetromino(CURRENT_TETROMINO_TYPE, (CURRENT_ROT + 1) % 4, CURRENT_POS[0], CURRENT_POS[1]);
-            TETROMINO_ACTION = NONE;
+            request.rotation = (request.rotation + 1) % 4;
+            render_tetromino(request);
         break;
 
         case LEFT:
-            render_tetromino(CURRENT_TETROMINO_TYPE, CURRENT_ROT, CURRENT_POS[0] - 1, CURRENT_POS[1]);
-            TETROMINO_ACTION = NONE;
+            request.x -= 1;
+            render_tetromino(request);
         break;
 
         case RIGHT:
-            render_tetromino(CURRENT_TETROMINO_TYPE, CURRENT_ROT, CURRENT_POS[0] + 1, CURRENT_POS[1]);
-            TETROMINO_ACTION = NONE;
+            request.x += 1;
+            render_tetromino(request);
+
         break;
 
         case DROP:
@@ -60,25 +114,116 @@ void updateTetris() {
         break;
 
         case DOWN:
-            render_tetromino(CURRENT_TETROMINO_TYPE, CURRENT_ROT, CURRENT_POS[0], CURRENT_POS[1] + 1);
-            TETROMINO_ACTION = NONE;
+            request.y += 1;
+            if(!render_tetromino(request)) {
+                lock_delay_count++;
+            } else {
+                lock_delay_count = 0;
+            }
+        break;
+
+        case RESTART:
+
+            initTetris();
+        break;
+
+        case AUTO_DROP:
+
+            request.y += 1;
+            if (!render_tetromino(request)) {
+                lock_delay_count++;
+            } else {
+                lock_delay_count = 0;
+            }
+
+            if (lock_delay_count >= lock_delay_threshold) {
+                lock_delay_count = 0;
+
+                // lock tetromino in place
+                int i = 4;
+                while(i --> 0) {
+                    uint8_t x_coord = i * 2;
+                    uint8_t y_coord = x_coord + 1;
+
+                    uint8_t _x = CURRENT_TETROMINO_COORDS[x_coord];
+                    uint8_t _y = CURRENT_TETROMINO_COORDS[y_coord];
+
+                    CURRENT_TETROMINO_COORDS[x_coord] = 0;
+                    CURRENT_TETROMINO_COORDS[y_coord] = 0;
+
+                    set_playfield(_x, _y, CURRENT_TETROMINO.type.color);
+                }
+
+                // clear lines if any
+                int row =
+
+                spawn_tetromino();
+            }
+
         break;
     }
-
+    TETROMINO_ACTION = NONE;
 
 }
 
 void spawn_tetromino() {
-    render_tetromino(TETRA_Z, 0, 3, 11);
+
+    current_queue_index++;
+    if(current_queue_index >= tetromino_queue_size) {
+        current_queue_index = 0;
+
+        // apply shuffle algorithm
+        shuffle(tetromino_queue, tetromino_queue_size, sizeof(uint8_t));
+    }
+
+    Tetromino type;
+
+    switch(tetromino_queue[current_queue_index]) {
+        case 1:
+            type = TETRA_I;
+        break;
+        case 2:
+            type = TETRA_J;
+        break;
+        case 3:
+            type = TETRA_L;
+        break;
+        case 4:
+            type = TETRA_O;
+        break;
+        case 5:
+            type = TETRA_S;
+        break;
+        case 6:
+            type = TETRA_T;
+        break;
+        case 7:
+            type = TETRA_Z;
+        break;
+    }
+
+    Tetromino_Movement tetra_request = {
+        type,
+        0,
+        3, 0
+    };
+
+    if(!render_tetromino(tetra_request)) {
+
+        // Reset the game
+        initTetris();
+    }
 }
 
-// render current tetromino
-void render_tetromino(Tetromino tetra, uint8_t rotation_idx, uint8_t x, uint8_t y) {
+// render tetromino movement request
+bool render_tetromino(Tetromino_Movement tetra_request) {
 
     uint16_t bit, piece;
     uint8_t row = 0, col = 0;
 
-    piece = tetra.rotation[rotation_idx];
+    piece = tetra_request.type.rotation[tetra_request.rotation];
+    uint8_t x = tetra_request.x;
+    uint8_t y = tetra_request.y;
 
     // simple 'queue' to store coords of blocks to render on playing field.
     // Each tetromino has 4 blocks with total of 4 coordinates.
@@ -87,7 +232,6 @@ void render_tetromino(Tetromino tetra, uint8_t rotation_idx, uint8_t x, uint8_t 
     //      x = i * 2, y = x + 1
     //
     uint8_t block_render_queue[8] = {0};
-    bool render_tetromino_block = true;
 
     // loop through tetramino data
     int i = 0;
@@ -101,23 +245,19 @@ void render_tetromino(Tetromino tetra, uint8_t rotation_idx, uint8_t x, uint8_t 
             // bounds check
             if ((_x < 0) || (_x >= PLAYFIELD_WIDTH)
                 || (_y < 0) || (_y >= PLAYFIELD_HEIGHT)
-                || get_playfield(_x, _y) == true) {
+                || get_playfield(_x, _y) != EMPTY) {
 
                 // unable to render tetramino block
-                render_tetromino_block = false;
-
                 printf("UNABLE TO MOVE (%d, %d)\n", _x, _y);
 
+                return false;
                 break;
-                return;
             } else {
 
                 block_render_queue[i * 2] = _x;
                 block_render_queue[i * 2 + 1] = _y;
                 i++;
             }
-
-            // draw_block(_x, _y, 0, 255, 0, 255);
         }
 
         // cycle col between 0 to 3
@@ -126,17 +266,8 @@ void render_tetromino(Tetromino tetra, uint8_t rotation_idx, uint8_t x, uint8_t 
 
     }
 
-    if(!render_tetromino_block) {
-        return;
-    }
-
-    // TODO: put all of this into a struct
-    CURRENT_TETROMINO_TYPE = tetra;
-    CURRENT_ROT = rotation_idx;
-
-    // update new position
-    CURRENT_POS[0] = x;
-    CURRENT_POS[1] = y;
+    // save tetromino as the new current
+    CURRENT_TETROMINO = tetra_request;
 
     // clear old tetromino position
     i = 4;
@@ -144,29 +275,18 @@ void render_tetromino(Tetromino tetra, uint8_t rotation_idx, uint8_t x, uint8_t 
         uint8_t x_coord = i * 2;
         uint8_t y_coord = x_coord + 1;
 
-
         uint8_t _x = CURRENT_TETROMINO_COORDS[x_coord];
         uint8_t _y = CURRENT_TETROMINO_COORDS[y_coord];
 
-        // printf("clear (%d, %d)\n", _x, _y);
-
-        draw_block(_x, _y, DEFAULT_BLOCK_COLOR);
+        draw_block(_x, _y, EMPTY);
     }
 
-    // printf("...\n");
-
-    // render tetromino blocks
+    // render new tetromino blocks
     i = 4;
     while(i --> 0) {
 
         uint8_t x_coord = i * 2;
         uint8_t y_coord = x_coord + 1;
-
-
-        // uint8_t _x = CURRENT_TETROMINO_COORDS[x_coord];
-        // uint8_t _y = CURRENT_TETROMINO_COORDS[y_coord];
-
-        // draw_block(_x, _y, DEFAULT_BLOCK_COLOR);
 
         // store and draw new tetromino position
         uint8_t _x = block_render_queue[x_coord];
@@ -175,15 +295,17 @@ void render_tetromino(Tetromino tetra, uint8_t rotation_idx, uint8_t x, uint8_t 
         CURRENT_TETROMINO_COORDS[x_coord] = _x;
         CURRENT_TETROMINO_COORDS[y_coord] = _y;
 
-        draw_block(_x, _y, tetra.color);
+        draw_block(_x, _y, tetra_request.type.color);
 
-        // printf("draw (%d, %d)\n", _x, _y);
     }
 
-    // printf("...\n");
-
+    return true;
 }
 
-bool get_playfield(uint8_t x, uint8_t y) {
+Color_Block get_playfield(uint8_t x, uint8_t y) {
     return playfield[(y * PLAYFIELD_WIDTH) + x];
+}
+
+void set_playfield(uint8_t x, uint8_t y, Color_Block color) {
+    playfield[(y * PLAYFIELD_WIDTH) + x] = color;
 }
