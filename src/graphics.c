@@ -40,9 +40,21 @@ void init_graphics() {
 
     SDL_SetRenderDrawBlendMode(render, SDL_BLENDMODE_BLEND);
 
+    // texture for render context
     display = SDL_CreateTexture(render, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     SDL_SetRenderTarget(render, display);
+
+    // Load font
+    // TODO: move to dedicated font folder
+    gFont = TTF_OpenFont("src/font/Ubuntu-M.ttf", 20);
+    if (gFont == NULL) {
+        fprintf(stderr,
+                "\nTTF_OpenFont Error:  %s\n",
+                SDL_GetError());
+        exit(1);
+    }
+
 }
 
 void setRenderChanged() {
@@ -51,11 +63,21 @@ void setRenderChanged() {
 
 void preRender() {
 
+
     SDL_SetRenderTarget(render, display);
+
+
+}
+
+void postRender() {
+
+
+
 }
 
 void updateRender() {
 
+    // lazily update the screen only if render operations are queued
     if(render_changed) {
 
         SDL_SetRenderTarget(render, NULL);

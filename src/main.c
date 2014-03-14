@@ -27,6 +27,8 @@ int main(int argc, const char *argv[]) {
 
         updateTetris();
 
+        postRender();
+
         updateRender();
 
         // Set to ~60 fps.

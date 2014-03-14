@@ -22,6 +22,12 @@ void draw_playing_field() {
     for (; i >= 0; i -= BLOCK_SIZE + 1)
         aalineRGBA(render, 0, i, WINDOW_WIDTH, i, 187, 173, 160, 255);
 
+
+    i = PLAYFIELD_HEIGHT * PLAYFIELD_WIDTH;
+    while (i --> 0)
+        set_playfield(i % PLAYFIELD_WIDTH, i / PLAYFIELD_WIDTH, playfield[i]);
+
+
     // Update the screen
     setRenderChanged();
 }
@@ -101,6 +107,9 @@ void lockTetromino() {
     // clear lines if any
     uint8_t row = PLAYFIELD_HEIGHT;
     int8_t row_to_copy_to = -1;
+
+    uint8_t completed_lines = 0;
+
     while(row --> 0) {
         uint8_t col;
         bool complete_line = true;
@@ -116,6 +125,8 @@ void lockTetromino() {
 
         // clear line
         if(complete_line) {
+
+            completed_lines++;
 
             if(row_to_copy_to < row) {
                 row_to_copy_to = row;
@@ -136,8 +147,69 @@ void lockTetromino() {
 
     }
 
+    // update score
+
+    if(completed_lines > 0) {
+        // tetris
+        score += completed_lines/4 * 800;
+        completed_lines = completed_lines % 4;
+
+        // triple
+        score += completed_lines/3 * 500;
+        completed_lines = completed_lines % 3;
+
+        // double
+        score += completed_lines/2 * 300;
+        completed_lines = completed_lines % 2;
+
+        // single
+        score += completed_lines * 100;
+    }
+
+
     spawn_tetromino();
 
+}
+
+
+
+void render_score() {
+    // Show tetris score after all tetris operations are finished
+    SDL_Color textColor = { 0x11, 0x1F, 0x3F };
+
+    sds string_score = printfcomma(score);
+
+    SDL_Surface* textSurface = TTF_RenderText_Blended(gFont, string_score, textColor);
+
+    sdsfree(string_score);
+
+    if (textSurface == NULL) {
+        fprintf(stderr,
+                "\nTTF_RenderText_Solid Error:  %s\n",
+                SDL_GetError());
+        exit(1);
+    }
+
+    SDL_Texture* mTexture = SDL_CreateTextureFromSurface(render, textSurface);
+
+    if (mTexture == NULL) {
+        fprintf(stderr,
+                "\nSDL_CreateTextureFromSurface Error:  %s\n",
+                SDL_GetError());
+        exit(1);
+    }
+
+    int mWidth = textSurface->w;
+    int mHeight = textSurface->h;
+
+    SDL_FreeSurface(textSurface);
+
+    // render text
+    SDL_Rect renderQuad = { WINDOW_WIDTH - mWidth - 10, 10, mWidth, mHeight };
+
+    SDL_RenderCopyEx(render, mTexture, NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);
+
+    SDL_DestroyTexture(mTexture);
 }
 
 void updateTetris() {
@@ -146,12 +218,52 @@ void updateTetris() {
         cb_timer = SDL_AddTimer(500, auto_drop_timer, NULL);
     }
 
+    // draw the scoreboard as needed
+    int i = 4;
+    bool on_score_area = false;
+    while(i --> 0) {
+        uint8_t x_coord = i * 2;
+        uint8_t y_coord = x_coord + 1;
+
+        // uint8_t _x = CURRENT_TETROMINO_COORDS[x_coord];
+        uint8_t _y = CURRENT_TETROMINO_COORDS[y_coord];
+
+        // if a tetromino is within the top 3 rows of the playing field, redraw
+        // that area of the playing field.
+        // the third row is considered when the tetromino leaves the score area,
+        // it will clear the previous position.
+        if(_y <= 2) {
+            on_score_area = true;
+            break;
+        }
+    }
+
+    if(on_score_area) {
+
+        // re-draw playfield area where score is located in
+        int n = PLAYFIELD_WIDTH * 2 - 1;
+        while(n --> 0) {
+            int x = n % PLAYFIELD_WIDTH;
+            int y = n / PLAYFIELD_WIDTH;
+
+            set_playfield(x, y, get_playfield(x, y));
+        }
+
+        draw_playing_field();
+
+        // re-draw tetromino
+        render_tetromino(CURRENT_TETROMINO);
+
+        render_score();
+    }
+
+
     Tetromino_Movement request = CURRENT_TETROMINO;
 
     // action from keyboard
     switch(TETROMINO_ACTION) {
         case NONE:
-            // do nothing
+            // do nothing - don't bother redrawing
         break;
 
         case ROTATE:

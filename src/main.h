@@ -9,5 +9,6 @@
 SDL_Window *window;
 SDL_Renderer *render;
 SDL_Texture *display;
+TTF_Font *gFont;
 
 bool render_changed;

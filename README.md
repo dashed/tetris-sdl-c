@@ -13,6 +13,10 @@ Install
 
     On OSX, you may use [homebrew](http://brew.sh/).
 
+    Also install:
+
+    * [sdl2_gfx](http://cms.ferzkopp.net/index.php/software/13-sdl-gfx)
+
 2. `make` to create `tetris_toy`
 
 3. `./tetris_toy`
