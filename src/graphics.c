@@ -46,7 +46,6 @@ void init_graphics() {
     SDL_SetRenderTarget(render, display);
 
     // Load font
-    // TODO: move to dedicated font folder
     gFont = TTF_OpenFont("src/font/Ubuntu-M.ttf", 20);
     if (gFont == NULL) {
         fprintf(stderr,
@@ -65,12 +64,6 @@ void preRender() {
 
 
     SDL_SetRenderTarget(render, display);
-
-
-}
-
-void postRender() {
-
 
 
 }

@@ -252,10 +252,11 @@ void updateTetris() {
         draw_playing_field();
 
         // re-draw tetromino
-        render_tetromino(CURRENT_TETROMINO);
+        render_current_tetromino(CURRENT_TETROMINO);
 
         render_score();
     }
+
 
 
     Tetromino_Movement request = CURRENT_TETROMINO;
@@ -268,24 +269,24 @@ void updateTetris() {
 
         case ROTATE:
             request.rotation = (request.rotation + 1) % 4;
-            render_tetromino(request);
+            render_current_tetromino(request);
         break;
 
         case LEFT:
             request.x -= 1;
-            render_tetromino(request);
+            render_current_tetromino(request);
         break;
 
         case RIGHT:
             request.x += 1;
-            render_tetromino(request);
+            render_current_tetromino(request);
 
         break;
 
         case DROP:
 
             request.y += 1;
-            while(render_tetromino(request))
+            while(render_current_tetromino(request))
                 request.y += 1;
 
             lockTetromino();
@@ -294,7 +295,7 @@ void updateTetris() {
 
         case DOWN:
             request.y += 1;
-            if(!render_tetromino(request)) {
+            if(!render_current_tetromino(request)) {
                 lock_delay_count++;
             } else {
                 lock_delay_count = 0;
@@ -308,7 +309,7 @@ void updateTetris() {
         case AUTO_DROP:
 
             request.y += 1;
-            if (!render_tetromino(request)) {
+            if (!render_current_tetromino(request)) {
                 lock_delay_count++;
             } else {
                 lock_delay_count = 0;
@@ -366,17 +367,14 @@ void spawn_tetromino() {
         3, 0
     };
 
-    if(!render_tetromino(tetra_request)) {
+    if(!render_current_tetromino(tetra_request)) {
 
         // Reset the game
         initTetris();
     }
 }
 
-// render tetromino movement request
-// returns true if tetromino is rendered succesfully; false otherwise
-bool render_tetromino(Tetromino_Movement tetra_request) {
-
+bool can_render_tetromino(Tetromino_Movement tetra_request, uint8_t block_render_queue[]) {
     uint16_t bit, piece;
     uint8_t row = 0, col = 0;
 
@@ -384,13 +382,6 @@ bool render_tetromino(Tetromino_Movement tetra_request) {
     uint8_t x = tetra_request.x;
     uint8_t y = tetra_request.y;
 
-    // simple 'queue' to store coords of blocks to render on playing field.
-    // Each tetromino has 4 blocks with total of 4 coordinates.
-    //
-    // To access a coord, if 0 <= i < 4, then
-    //      x = i * 2, y = x + 1
-    //
-    uint8_t block_render_queue[8] = {0};
 
     // loop through tetramino data
     int i = 0;
@@ -411,8 +402,11 @@ bool render_tetromino(Tetromino_Movement tetra_request) {
                 break;
             } else {
 
-                block_render_queue[i * 2] = _x;
-                block_render_queue[i * 2 + 1] = _y;
+                if(block_render_queue != NULL) {
+                    block_render_queue[i * 2] = _x;
+                    block_render_queue[i * 2 + 1] = _y;
+                }
+
                 i++;
             }
         }
@@ -423,20 +417,62 @@ bool render_tetromino(Tetromino_Movement tetra_request) {
 
     }
 
-    // save tetromino as the new current
-    CURRENT_TETROMINO = tetra_request;
+    return true;
+
+}
+
+bool render_current_tetromino(Tetromino_Movement tetra_request) {
+
+    // create ghost
+    Tetromino ghost = tetra_request.type;
+
+    // change alpha to ~50%
+    ghost.color = ghost.color & 0x00FFFFFF;
+    ghost.color = ghost.color | 0x66000000;
+
+    Tetromino_Movement ghost_request = tetra_request;
+    ghost_request.type = ghost;
+
+    // render ghost tetromino
+    while(render_tetromino(ghost_request, GHOST_TETROMINO_COORDS))
+        ghost_request.y += 1;
+
+    if(render_tetromino(tetra_request, CURRENT_TETROMINO_COORDS)) {
+        CURRENT_TETROMINO = tetra_request;
+
+        return true;
+    }
+
+    return false;
+}
+
+// render tetromino movement request
+// returns true if tetromino is rendered succesfully; false otherwise
+bool render_tetromino(Tetromino_Movement tetra_request, uint8_t current_coords[]) {
+
+    // simple 'queue' to store coords of blocks to render on playing field.
+    // Each tetromino has 4 blocks with total of 4 coordinates.
+    //
+    // To access a coord, if 0 <= i < 4, then
+    //      x = i * 2, y = x + 1
+    //
+    uint8_t block_render_queue[8] = {0};
+
+    if(!can_render_tetromino(tetra_request, block_render_queue))
+        return false;
 
     // clear old tetromino position
-    i = 4;
+    int i = 4;
     while(i --> 0) {
         uint8_t x_coord = i * 2;
         uint8_t y_coord = x_coord + 1;
 
-        uint8_t _x = CURRENT_TETROMINO_COORDS[x_coord];
-        uint8_t _y = CURRENT_TETROMINO_COORDS[y_coord];
+        uint8_t _x = current_coords[x_coord];
+        uint8_t _y = current_coords[y_coord];
 
         draw_block(_x, _y, EMPTY);
     }
+
 
     // render new tetromino blocks
     i = 4;
@@ -449,8 +485,8 @@ bool render_tetromino(Tetromino_Movement tetra_request) {
         uint8_t _x = block_render_queue[x_coord];
         uint8_t _y = block_render_queue[y_coord];
 
-        CURRENT_TETROMINO_COORDS[x_coord] = _x;
-        CURRENT_TETROMINO_COORDS[y_coord] = _y;
+        current_coords[x_coord] = _x;
+        current_coords[y_coord] = _y;
 
         draw_block(_x, _y, tetra_request.type.color);
 

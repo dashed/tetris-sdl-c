@@ -15,7 +15,8 @@ Install
 
     Also install:
 
-    * [sdl2_gfx](http://cms.ferzkopp.net/index.php/software/13-sdl-gfx)
+    * [SDL2_gfx](http://cms.ferzkopp.net/index.php/software/13-sdl-gfx)
+    * [SDL2_ttf](https://www.libsdl.org/projects/SDL_ttf/)
 
 2. `make` to create `tetris_toy`
 
@@ -30,17 +31,12 @@ Usage
 - Press `r` to reset.
 - Press `esc` to quit.
 
-Status
-======
-
-Adequately finished.
 
 To Do
 =====
 
 - Add wall kick
-- Ghost piece
-- Implement any other mechanics listed in http://tetrisconcept.net/wiki/Main_Page
+- Implement any other interesting mechanics listed in http://tetrisconcept.net/wiki/Main_Page
 
 License
 =======

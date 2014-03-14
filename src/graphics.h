@@ -17,6 +17,5 @@ void draw_block(uint8_t x, uint8_t y, uint32_t color);
 
 void setRenderChanged();
 void preRender();
-void postRender();
 void updateRender();
 

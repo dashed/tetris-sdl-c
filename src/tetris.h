@@ -101,6 +101,7 @@ const static Tetromino TETRA_Z = {
 //      x = i * 2, y = x + 1
 //
 static uint8_t CURRENT_TETROMINO_COORDS[8] = {0};
+static uint8_t GHOST_TETROMINO_COORDS[8] = {0};
 
 static Tetromino_Movement CURRENT_TETROMINO;
 
@@ -143,4 +144,5 @@ void updateTetris();
 void lockTetromino();
 
 void spawn_tetromino();
-bool render_tetromino(Tetromino_Movement tetra_request);
+bool render_tetromino(Tetromino_Movement tetra_request, uint8_t current_coords[]);
+bool render_current_tetromino(Tetromino_Movement tetra_request);
