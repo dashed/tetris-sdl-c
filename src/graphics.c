@@ -38,6 +38,9 @@ void init_graphics() {
         exit(1);
     }
 
+    display = SDL_CreateTexture(render, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+    SDL_SetRenderTarget(render, display);
 }
 
 
@@ -50,11 +53,13 @@ void setRenderChanged() {
 void preRender() {
     // Set rendering clear color
     // This sets the 'background color'
-    SDL_SetRenderDrawColor(render, 204, 192, 179, 255);
+    // SDL_SetRenderDrawColor(render, 204, 192, 179, 255);
 
     // Clear the render
     // 'set' background color defined in SDL_SetRenderDrawColor(...)
-    SDL_RenderClear(render);
+    // SDL_RenderClear(render);
+
+    SDL_SetRenderTarget(render, display);
 }
 
 void updateRender() {
@@ -67,8 +72,13 @@ void updateRender() {
 
     if(render_changed) {
 
+        SDL_SetRenderTarget(render, NULL);
+        SDL_RenderCopy(render, display, NULL, NULL);
+
         SDL_RenderPresent(render);
         render_changed = false;
+
+
     }
 }
 

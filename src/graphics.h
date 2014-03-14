@@ -2,6 +2,7 @@
 
 extern SDL_Window *window;
 extern SDL_Renderer *render;
+extern SDL_Texture *display;
 
 // This tracks whether to update the render.
 // Any procedure that has updated the render should set this to true.

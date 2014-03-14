@@ -23,7 +23,7 @@ int main(int argc, const char *argv[]) {
     bool quit = false;
     while(!quit) {
 
-        // preRender();
+        preRender();
         // draw_playing_field();
 
         getInput();

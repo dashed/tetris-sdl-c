@@ -41,15 +41,22 @@ void updateTetris() {
         break;
 
         case ROTATE:
+            render_tetromino(CURRENT_TETROMINO_TYPE, (CURRENT_ROT + 1) % 4, CURRENT_POS[0], CURRENT_POS[1]);
+            TETROMINO_ACTION = NONE;
         break;
 
         case LEFT:
+            render_tetromino(CURRENT_TETROMINO_TYPE, CURRENT_ROT, CURRENT_POS[0] - 1, CURRENT_POS[1]);
+            TETROMINO_ACTION = NONE;
         break;
 
         case RIGHT:
+            render_tetromino(CURRENT_TETROMINO_TYPE, CURRENT_ROT, CURRENT_POS[0] + 1, CURRENT_POS[1]);
+            TETROMINO_ACTION = NONE;
         break;
 
         case DROP:
+
         break;
 
         case DOWN:
