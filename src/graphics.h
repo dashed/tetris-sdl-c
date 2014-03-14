@@ -10,8 +10,9 @@ extern bool render_changed;
 void init_graphics();
 void cleanup_graphics();
 
-void draw_playing_field();
-void draw_block(int x, int y, uint32_t color);
+
+void draw_block(uint8_t x, uint8_t y, uint32_t color);
 
 void setRenderChanged();
+void preRender();
 void updateRender();

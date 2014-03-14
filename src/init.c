@@ -27,6 +27,8 @@ void init() {
     //     exit(1);
     // }
 
+    TETROMINO_ACTION = NONE;
+
     init_graphics();
 
     draw_playing_field();

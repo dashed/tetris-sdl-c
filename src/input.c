@@ -7,8 +7,8 @@ void getInput() {
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-            /* Closing the Window or pressing Escape will exit the program */
 
+            /* Closing the Window or pressing Escape will exit the program */
             case SDL_QUIT:
                 exit(0);
             break;
@@ -19,9 +19,20 @@ void getInput() {
                         exit(0);
                     break;
 
+                    case SDLK_s:
+                        TETROMINO_ACTION = DOWN;
+                    break;
+
                     default:
                     break;
                 }
+            break;
+
+            case SDL_KEYUP:
+                TETROMINO_ACTION = NONE;
+            break;
+
+            default:
             break;
         }
     }

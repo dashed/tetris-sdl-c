@@ -40,8 +40,14 @@ void init_graphics() {
 
 }
 
-void draw_playing_field() {
 
+
+
+void setRenderChanged() {
+    render_changed = true;
+}
+
+void preRender() {
     // Set rendering clear color
     // This sets the 'background color'
     SDL_SetRenderDrawColor(render, 204, 192, 179, 255);
@@ -49,26 +55,6 @@ void draw_playing_field() {
     // Clear the render
     // 'set' background color defined in SDL_SetRenderDrawColor(...)
     SDL_RenderClear(render);
-
-    // Draw tetris playing field
-    // Vertical lines for playing field
-    int i = PLAYFIELD_WIDTH * (BLOCK_SIZE + 1);
-    for (; i >= 0; i -= BLOCK_SIZE + 1)
-        aalineRGBA(render, i, 0, i, WINDOW_HEIGHT, 187, 173, 160, 255);
-
-    // Horizontal lines for playing field
-    i = PLAYFIELD_HEIGHT * (BLOCK_SIZE + 1);
-    for (; i >= 0; i -= BLOCK_SIZE + 1)
-        aalineRGBA(render, 0, i, WINDOW_WIDTH, i, 187, 173, 160, 255);
-
-
-    //Update the screen
-    setRenderChanged();
-}
-
-
-void setRenderChanged() {
-    render_changed = true;
 }
 
 void updateRender() {
@@ -80,23 +66,24 @@ void updateRender() {
     // SDL_RenderClear(render);
 
     if(render_changed) {
+
         SDL_RenderPresent(render);
         render_changed = false;
     }
 }
 
-void draw_block(int x, int y, uint32_t color) {
+void draw_block(uint8_t x, uint8_t y, uint32_t color) {
 
     assert(x >= 0 && x < PLAYFIELD_WIDTH);
     assert(y >= 0 && y < PLAYFIELD_HEIGHT);
 
     // top-left coords of block
-    int x_tl = x * (BLOCK_SIZE + 1) + 1;
-    int y_tl = y * (BLOCK_SIZE + 1) + 1;
+    uint16_t x_tl = x * (BLOCK_SIZE + 1) + 1;
+    uint16_t y_tl = y * (BLOCK_SIZE + 1) + 1;
 
     // bottom-right coords of block
-    int x_br = x_tl + BLOCK_SIZE;
-    int y_br = y_tl + BLOCK_SIZE;
+    uint16_t x_br = x_tl + BLOCK_SIZE;
+    uint16_t y_br = y_tl + BLOCK_SIZE;
 
     boxColor(render, x_tl, y_tl, x_br, y_br, color);
 

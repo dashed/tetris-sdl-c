@@ -22,6 +22,10 @@ int main(int argc, const char *argv[]) {
 
     bool quit = false;
     while(!quit) {
+
+        // preRender();
+        // draw_playing_field();
+
         getInput();
 
         updateTetris();
