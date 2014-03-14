@@ -11,6 +11,8 @@ Install
 
 1.  Install SDL 2.x ([www.libsdl.org](http://www.libsdl.org/)) in UNIX style; something like `./configure && make && make install`.
 
+    On OSX, you may use [homebrew](http://brew.sh/).
+
 2. `make` to create `tetris_toy`
 
 3. `./tetris_toy`
