@@ -82,7 +82,7 @@ void initTetris() {
 void updateTetris() {
 
     if (cb_timer == 0) {
-        cb_timer = SDL_AddTimer(1000, auto_drop_timer, NULL);
+        cb_timer = SDL_AddTimer(500, auto_drop_timer, NULL);
     }
 
     Tetromino_Movement request = CURRENT_TETROMINO;
@@ -90,7 +90,7 @@ void updateTetris() {
     // action from keyboard
     switch(TETROMINO_ACTION) {
         case NONE:
-            render_tetromino(request);
+            // do nothing
         break;
 
         case ROTATE:
@@ -123,7 +123,6 @@ void updateTetris() {
         break;
 
         case RESTART:
-
             initTetris();
         break;
 
@@ -155,7 +154,42 @@ void updateTetris() {
                 }
 
                 // clear lines if any
-                int row =
+                uint8_t row = PLAYFIELD_HEIGHT;
+                int8_t row_to_copy_to = -1;
+                while(row --> 0) {
+                    uint8_t col;
+                    bool complete_line = true;
+
+                    // check if line is complete
+                    for(col = 0; col < PLAYFIELD_WIDTH; col++) {
+                        if(get_playfield(col, row) == EMPTY) {
+
+                            complete_line = false;
+                            break;
+                        }
+                    }
+
+                    // clear line
+                    if(complete_line) {
+
+                        if(row_to_copy_to < row) {
+                            row_to_copy_to = row;
+                        }
+
+                        for(col = 0; col < PLAYFIELD_WIDTH; col++) {
+                            set_playfield(col, row, EMPTY);
+                        }
+
+                    } else if(row_to_copy_to > row) {
+
+                        for(col = 0; col < PLAYFIELD_WIDTH; col++) {
+                            set_playfield(col, row_to_copy_to, get_playfield(col, row));
+                        }
+
+                        row_to_copy_to--;
+                    }
+
+                }
 
                 spawn_tetromino();
             }
@@ -216,6 +250,7 @@ void spawn_tetromino() {
 }
 
 // render tetromino movement request
+// returns true if tetromino is rendered succesfully; false otherwise
 bool render_tetromino(Tetromino_Movement tetra_request) {
 
     uint16_t bit, piece;
@@ -248,8 +283,6 @@ bool render_tetromino(Tetromino_Movement tetra_request) {
                 || get_playfield(_x, _y) != EMPTY) {
 
                 // unable to render tetramino block
-                printf("UNABLE TO MOVE (%d, %d)\n", _x, _y);
-
                 return false;
                 break;
             } else {
@@ -308,4 +341,6 @@ Color_Block get_playfield(uint8_t x, uint8_t y) {
 
 void set_playfield(uint8_t x, uint8_t y, Color_Block color) {
     playfield[(y * PLAYFIELD_WIDTH) + x] = color;
+
+    draw_block(x, y, color);
 }
