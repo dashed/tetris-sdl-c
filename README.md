@@ -11,11 +11,19 @@ Install
 
 1.  Install SDL 2.x ([www.libsdl.org](http://www.libsdl.org/)) in UNIX style; something like `./configure && make && make install`.
 
-    On OSX, you may use [homebrew](http://brew.sh/).
+    On OSX, you may use [homebrew](http://brew.sh/):
 
-    Also install:
-    * [SDL2_gfx](http://cms.ferzkopp.net/index.php/software/13-sdl-gfx)
-    * [SDL2_ttf](https://www.libsdl.org/projects/SDL_ttf/)
+    ```sh
+    # As of Dec 2, 2017
+
+    brew install sdl2
+
+    # http://formulae.brew.sh/formula/sdl2_gfx
+    brew install sdl2_gfx
+
+    # http://formulae.brew.sh/formula/sdl2_ttf
+    brew install sdl2_ttf
+    ```
 
 2. `make` to create `tetris_toy`
 
