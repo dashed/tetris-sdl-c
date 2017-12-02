@@ -416,7 +416,11 @@ bool can_render_tetromino(Tetromino_Movement tetra_request, uint8_t block_render
 
         // cycle col between 0 to 3
         // if col is 0 then increment row
-        ((col = ++col % 4) == 0 && ++row);
+        col++;
+        col = col % 4;
+        if(col == 0) {
+            row ++;
+        }
 
     }
 
