@@ -5,6 +5,8 @@ void init_graphics() {
 
     render_changed = false;
 
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+
     window = SDL_CreateWindow(
         // title of window
         WINDOW_TITLE,
@@ -13,7 +15,7 @@ void init_graphics() {
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 
         WINDOW_WIDTH, WINDOW_HEIGHT,
-        SDL_WINDOW_SHOWN);
+        SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI);
 
     if (window == NULL) {
         fprintf(stderr,
@@ -46,7 +48,8 @@ void init_graphics() {
     SDL_SetRenderTarget(render, display);
 
     // Load font
-    gFont = TTF_OpenFont("src/font/Ubuntu-M.ttf", 20);
+    gFont = TTF_OpenFont("src/font/Inconsolata-Regular.ttf", 30);
+
     if (gFont == NULL) {
         fprintf(stderr,
                 "\nTTF_OpenFont Error:  %s\n",
@@ -54,6 +57,7 @@ void init_graphics() {
         exit(1);
     }
 
+    TTF_SetFontHinting(gFont, TTF_HINTING_MONO);
 }
 
 void setRenderChanged() {

@@ -163,8 +163,6 @@ void lockTetromino() {
 
 }
 
-
-
 void render_score() {
     // Show tetris score after all tetris operations are finished
     SDL_Color textColor = { 0x11, 0x1F, 0x3F };
@@ -194,14 +192,13 @@ void render_score() {
     int mWidth = textSurface->w;
     int mHeight = textSurface->h;
 
-    SDL_FreeSurface(textSurface);
-
     // render text
     SDL_Rect renderQuad = { WINDOW_WIDTH - mWidth - 10, 10, mWidth, mHeight };
 
-    SDL_RenderCopyEx(render, mTexture, NULL, &renderQuad, 0, NULL, SDL_FLIP_NONE);
+    SDL_RenderCopy(render, mTexture, NULL, &renderQuad);
 
     SDL_DestroyTexture(mTexture);
+    SDL_FreeSurface(textSurface);
 }
 
 void updateTetris() {
