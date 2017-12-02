@@ -419,7 +419,7 @@ bool can_render_tetromino(Tetromino_Movement tetra_request, uint8_t block_render
         col++;
         col = col % 4;
         if(col == 0) {
-            row ++;
+            row++;
         }
 
     }
