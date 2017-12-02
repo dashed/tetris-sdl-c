@@ -13,16 +13,16 @@
 #ifndef _GLOBAL_CONSTANTS
 #define _GLOBAL_CONSTANTS
 
-static const char * WINDOW_TITLE = "tetris-sdl-c";
+#define WINDOW_TITLE "tetris-sdl-c"
 
 // a block 'pixel' of a playing field is 15px by 15px in size
-static const short int BLOCK_SIZE = 20;
+#define BLOCK_SIZE 20
 
 // standard size of a tetris playing field
-static const short int PLAYFIELD_HEIGHT = 22;
-static const short int PLAYFIELD_WIDTH = 10;
+#define PLAYFIELD_HEIGHT 22
+#define PLAYFIELD_WIDTH 10
 
-static const int WINDOW_HEIGHT = PLAYFIELD_HEIGHT * ( BLOCK_SIZE + 1) + 1;
-static const int WINDOW_WIDTH = PLAYFIELD_WIDTH * ( BLOCK_SIZE + 1) + 1;
+#define WINDOW_HEIGHT PLAYFIELD_HEIGHT * (BLOCK_SIZE + 1) + 1
+#define WINDOW_WIDTH PLAYFIELD_WIDTH * (BLOCK_SIZE + 1) + 1
 
 #endif
