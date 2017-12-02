@@ -91,11 +91,37 @@ void draw_block(uint8_t x, uint8_t y, uint32_t color) {
     uint16_t x_tl = x * (BLOCK_SIZE + 1) + 1;
     uint16_t y_tl = y * (BLOCK_SIZE + 1) + 1;
 
+    // top-right coords of block
+    uint16_t x_tr = x_tl + BLOCK_SIZE;
+    uint16_t y_tr = y_tl;
+
     // bottom-right coords of block
     uint16_t x_br = x_tl + BLOCK_SIZE;
     uint16_t y_br = y_tl + BLOCK_SIZE;
 
+    // bottom-left coords of block
+    uint16_t x_bl = x_tl;
+    uint16_t y_bl = y_tl + BLOCK_SIZE;
+
     boxColor(render, x_tl, y_tl, x_br, y_br, color);
+
+    // draw grid lines
+
+    if(y <= 0) {
+        // draw top horizontal grid line (from top-left to top-right)
+        aalineRGBA(render, x_tl, y_tl, x_tr, y_tr, 187, 173, 160, 255);
+    }
+
+    if(x <= 0) {
+        // draw left vertical grid line (from top-left to bottom-left)
+        aalineRGBA(render, x_tl, y_tl, x_bl, y_bl, 187, 173, 160, 255);
+    }
+
+    // draw bottom horizontal grid line (from bottom-left to bottom-right)
+    aalineRGBA(render, x_bl, y_bl, x_br, y_br, 187, 173, 160, 255);
+
+    // draw right vertical grid line (from top-right to bottom-right)
+    aalineRGBA(render, x_tr, y_tr, x_br, y_br, 187, 173, 160, 255);
 
     setRenderChanged();
 

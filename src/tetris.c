@@ -14,17 +14,6 @@ void draw_playing_field() {
     // 'set' background color defined in SDL_SetRenderDrawColor(...)
     SDL_RenderClear(render);
 
-    // Draw tetris playing field
-    // Vertical lines for playing field
-    // i = PLAYFIELD_WIDTH * (BLOCK_SIZE + 1);
-    // for (; i >= 0; i -= BLOCK_SIZE + 1)
-    //     aalineRGBA(render, i, 0, i, WINDOW_HEIGHT, 187, 173, 160, 0);
-
-    // Horizontal lines for playing field
-    // i = PLAYFIELD_HEIGHT * (BLOCK_SIZE + 1);
-    // for (; i >= 0; i -= BLOCK_SIZE + 1)
-    //     aalineRGBA(render, 0, i, WINDOW_WIDTH, i, 187, 173, 160, 0);
-
 
     i = PLAYFIELD_HEIGHT * PLAYFIELD_WIDTH;
     while (i --> 0)
