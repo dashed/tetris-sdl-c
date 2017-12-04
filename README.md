@@ -4,7 +4,13 @@ tetris-sdl-c
 A simple tetris game implemented in C using SDL 2.x.
 This is just a toy project to play with and learn SDL 2.x.
 
+**Demo on Snow Leopard OSX:**
+
 ![](demo.gif)
+
+**Demo on El Capitan OSX:**
+
+[![](https://thumbs.gfycat.com/CraftyEntireCleanerwrasse-size_restricted.gif)](https://gfycat.com/gifs/detail/CraftyEntireCleanerwrasse)
 
 Install
 =======
