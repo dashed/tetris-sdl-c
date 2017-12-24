@@ -22,7 +22,7 @@ Install
     - `sdl2_ttf`: https://www.libsdl.org/projects/SDL_ttf/
     - `sdl2_gfx`: http://cms.ferzkopp.net/index.php/software/13-sdl-gfx
 
-    On OSX, you may use [homebrew](http://brew.sh/):
+    On OSX (or macOS), you may use [homebrew](http://brew.sh/):
 
     ```sh
     # As of Dec 2, 2017
